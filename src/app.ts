@@ -1,33 +1,30 @@
-import express, { Application } from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import eventRoutes from '@routes/event.routes';
-import bookingRoutes from '@routes/booking.routes';
+import { Application, Request, Response } from 'express';
 import { errorHandler, notFoundHandler } from '@middlewares/error.handler';
 
-dotenv.config();
+import express from 'express';
+import routes from '@routes/index';
+import cors from 'cors';
 
 const app: Application = express();
 
-// Middlewares
+// Middlewares - CORS, парсинг JSON и URL-encoded данных
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api/events', eventRoutes);
-app.use('/api/bookings', bookingRoutes);
+// Маршруты API
+app.use('/api/v1', routes);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
+// Проверка работоспособности сервера
+app.get('/health', (_req: Request, res: Response): Response => {
+  return res.json({
     success: true,
-    message: 'Server is running',
+    message: "Server is running",
     timestamp: new Date().toISOString(),
   });
 });
 
-// Error handlers
+// Обработчики ошибок
 app.use(notFoundHandler);
 app.use(errorHandler);
 

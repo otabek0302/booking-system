@@ -1,21 +1,17 @@
 import { DataSource } from "typeorm";
-import { Event } from "@models/Event";
-import { Booking } from "@models/Booking";
-
-import dotenv from "dotenv";
-
-dotenv.config();
+import { Event, Booking } from "@models/index";
+import { env } from "@config/env.config";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: process.env.DB_HOST || "localhost",
-  port: parseInt(process.env.DB_PORT || "5432"),
-  username: process.env.DB_USERNAME || "postgres",
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || "booking_system",
+  host: env.dbHost,
+  port: env.dbPort,
+  username: env.dbUsername,
+  password: env.dbPassword,
+  database: env.dbName,
   entities: [Event, Booking],
-  synchronize: process.env.NODE_ENV === "development",
-  logging: process.env.NODE_ENV === "development",
+  synchronize: env.nodeEnv === "development",
+  logging: env.nodeEnv === "development",
   migrations: ["src/database/migrations/*.ts"],
   migrationsTableName: "migrations",
 });

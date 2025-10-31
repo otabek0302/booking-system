@@ -1,50 +1,50 @@
-# Build stage
+# Стадия сборки
 FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Копируем файлы зависимостей
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
+# Устанавливаем зависимости
 RUN npm ci
 
-# Copy source code
+# Копируем исходный код
 COPY src ./src
 
-# Build the application
+# Собираем приложение
 RUN npm run build
 
-# Production stage
+# Production стадия
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Копируем файлы зависимостей
 COPY package*.json ./
 
-# Install production dependencies only
+# Устанавливаем только production зависимости
 RUN npm ci --only=production
 
-# Copy built files from builder stage
+# Копируем собранные файлы из стадии сборки
 COPY --from=builder /app/dist ./dist
 
-# Expose port
+# Открываем порт
 EXPOSE 3000
 
-# Create non-root user
+# Создаем пользователя без root прав для безопасности
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
-# Change ownership
+# Меняем владельца файлов
 RUN chown -R nodejs:nodejs /app
 USER nodejs
 
-# Health check
+# Проверка работоспособности сервиса
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start the application
+# Запускаем приложение
 CMD ["npm", "start"]
 

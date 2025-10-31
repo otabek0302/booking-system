@@ -1,15 +1,10 @@
-import { Router } from 'express';
-import { BookingController } from '@controllers/booking.controller';
+import { Router } from "express";
+import { BookingController } from "@controllers/index";
+import { asyncHandler } from "@utils/index";
 
 const router = Router();
-const bookingController = new BookingController();
+const controller = new BookingController();
 
-router.get('/', bookingController.getAllBookings);
-router.get('/:id', bookingController.getBookingById);
-router.post('/event/:eventId', bookingController.createBooking);
-router.put('/:id', bookingController.updateBooking);
-router.put('/:id/cancel', bookingController.cancelBooking);
-router.delete('/:id', bookingController.deleteBooking);
+router.post("/reserve", asyncHandler(controller.reserve.bind(controller)));
 
 export default router;
-

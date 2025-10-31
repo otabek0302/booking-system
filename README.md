@@ -1,133 +1,82 @@
-# Booking System
+# Система бронирования мероприятий
 
-A modern event booking system built with Node.js, Express, TypeScript, and PostgreSQL using TypeORM.
+Профессиональная система управления бронированием событий, разработанная с использованием современных технологий Node.js, Express, TypeScript и PostgreSQL.
 
-## Features
+## 🎯 Описание проекта
 
-- 🎟️ Event Management (Create, Read, Update, Delete)
-- 📅 Booking Management with real-time capacity tracking
-- 🎫 Ticket availability checking
-- 💰 Dynamic pricing
-- 📊 Booking status management
-- 🔄 Automatic capacity updates
-- ✅ Input validation and error handling
+RESTful API для управления мероприятиями и бронированиями с возможностью отслеживания доступности мест в реальном времени. Архитектура проекта построена на принципах чистой архитектуры с разделением на слои: контроллеры, сервисы и модели данных.
 
-## Tech Stack
+## 🛠 Технологический стек
 
-- **Runtime**: Node.js
+- **Runtime**: Node.js 18+
 - **Framework**: Express.js
 - **Language**: TypeScript
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL 14+
 - **ORM**: TypeORM
-- **Validation**: Express Validator
+- **Containerization**: Docker, Docker Compose
+- **Code Quality**: Prettier, ESLint (готово к добавлению)
 
-## Prerequisites
+## ✨ Ключевые возможности
 
-- Node.js (v18 or higher)
-- PostgreSQL (v14 or higher)
-- npm or yarn
+### Архитектура
+- ✅ Чистая архитектура с разделением ответственности
+- ✅ Типизированный код на TypeScript
+- ✅ Централизованная обработка ошибок
+- ✅ Асинхронная обработка запросов через asyncHandler
+- ✅ Валидация данных на уровне сервисов
+- ✅ Docker-контейнеризация для легкого развертывания
 
-## Installation
+### Функционал
+- 🎫 Управление мероприятиями (CRUD операции)
+- 📅 Резервирование мест с проверкой доступности
+- 🔄 Автоматическое обновление количества свободных мест
+- ⚠️ Защита от дублирующих бронирований
+- 📊 Пагинация результатов
+- 🔒 Ограничение размера выборки (защита от DoS)
 
-1. Clone the repository:
+## 📋 Быстрый старт
+
+### 🐳 Запуск через Docker (рекомендуется)
+
 ```bash
+# Клонировать репозиторий
 git clone <repository-url>
 cd booking-system
+
+# Запустить все сервисы одной командой
+docker-compose up -d
+
+# Проверить статус
+docker-compose ps
+
+# Просмотреть логи
+docker-compose logs -f app
+
+# Остановить контейнеры
+docker-compose down
 ```
 
-2. Install dependencies:
+После запуска API будет доступен на `http://localhost:3000`
+
+### 💻 Ручная установка
+
 ```bash
+# Клонировать репозиторий
+git clone <repository-url>
+cd booking-system
+
+# Установить зависимости
 npm install
-```
 
-3. Set up environment variables:
-```bash
+# Настроить переменные окружения
 cp .env.example .env
-```
+# Отредактировать .env файл с вашими данными
 
-Edit `.env` with your database credentials and configuration.
-
-4. Run database migrations (optional):
-```bash
-npm run migration:run
-```
-
-5. Start the development server:
-```bash
+# Запустить проект в режиме разработки
 npm run dev
 ```
 
-## Available Scripts
-
-- `npm run dev` - Start development server with hot-reload
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run migration:generate` - Generate new migration
-- `npm run migration:run` - Run pending migrations
-- `npm run migration:revert` - Revert last migration
-
-## API Endpoints
-
-### Events
-
-- `GET /api/events` - Get all events (paginated)
-- `GET /api/events/available` - Get available events
-- `GET /api/events/:id` - Get event by ID
-- `POST /api/events` - Create new event
-- `PUT /api/events/:id` - Update event
-- `DELETE /api/events/:id` - Delete event
-
-### Bookings
-
-- `GET /api/bookings` - Get all bookings (paginated)
-- `GET /api/bookings/:id` - Get booking by ID
-- `POST /api/bookings/event/:eventId` - Create booking for event
-- `PUT /api/bookings/:id` - Update booking
-- `PUT /api/bookings/:id/cancel` - Cancel booking
-- `DELETE /api/bookings/:id` - Delete booking
-
-### Health Check
-
-- `GET /health` - Server health status
-
-## Project Structure
-
-```
-booking-system/
-├── src/
-│   ├── app.ts                 # Express app configuration
-│   ├── server.ts              # Server entry point
-│   ├── config/
-│   │   └── database.ts        # Database connection
-│   ├── models/
-│   │   ├── Event.ts           # Event entity
-│   │   └── Booking.ts         # Booking entity
-│   ├── controllers/
-│   │   ├── eventController.ts
-│   │   └── bookingController.ts
-│   ├── routes/
-│   │   ├── eventRoutes.ts
-│   │   └── bookingRoutes.ts
-│   ├── services/
-│   │   ├── eventService.ts
-│   │   └── bookingService.ts
-│   ├── middlewares/
-│   │   ├── errorHandler.ts
-│   │   └── validateRequest.ts
-│   ├── utils/
-│   │   └── ApiError.ts
-│   ├── @types/
-│   │   └── index.d.ts
-│   └── database/
-│       ├── migrations/
-│       └── seeds/
-├── .env.example
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-## Environment Variables
+### Переменные окружения
 
 ```env
 PORT=3000
@@ -137,45 +86,158 @@ DB_PORT=5432
 DB_USERNAME=postgres
 DB_PASSWORD=your_password
 DB_NAME=booking_system
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
-APP_URL=http://localhost:3000
 ```
 
-## Database Schema
+## 🔌 API Endpoints
+
+### Мероприятия
+- `GET /api/v1/events` - Получить все мероприятия (с пагинацией)
+- `GET /api/v1/events/:id` - Получить мероприятие по ID
+- `POST /api/v1/events` - Создать новое мероприятие
+- `PUT /api/v1/events/:id` - Обновить мероприятие
+- `DELETE /api/v1/events/:id` - Удалить мероприятие
+- `GET /api/v1/events/available` - Получить доступные мероприятия
+
+### Бронирования
+- `POST /api/v1/bookings/reserve` - Забронировать место
+  - Тело запроса: `{ "event_id": 1, "user_id": "user123" }`
+  - Ответ: `{ "success": true, "data": {...}, "message": "Booking successful" }`
+
+### Здоровье системы
+- `GET /health` - Проверка работоспособности сервера
+
+## 📁 Структура проекта
+
+```
+booking-system/
+├── src/
+│   ├── app.ts                    # Конфигурация Express приложения
+│   ├── server.ts                 # Точка входа сервера
+│   ├── config/
+│   │   └── env.config.ts         # Централизованная конфигурация
+│   ├── models/                   # Модели данных TypeORM
+│   │   ├── Event.ts              
+│   │   └── Booking.ts            
+│   ├── controllers/              # Контроллеры (обработка HTTP запросов)
+│   │   ├── event.controller.ts
+│   │   └── booking.controller.ts
+│   ├── services/                 # Бизнес-логика
+│   │   ├── event.service.ts
+│   │   └── booking.service.ts
+│   ├── routes/                   # Маршрутизация
+│   │   ├── event.routes.ts
+│   │   └── booking.routes.ts
+│   ├── middlewares/              # Middleware функции
+│   │   └── error.handler.ts
+│   ├── utils/                    # Утилиты
+│   │   ├── api.error.ts
+│   │   └── async.handler.ts
+│   ├── @types/                   # TypeScript определения
+│   │   └── index.d.ts
+│   └── database/
+│       ├── database.ts
+│       ├── migrations/
+│       └── seeds/
+├── .env.example
+├── package.json
+├── tsconfig.json
+├── .prettierrc
+└── README.md
+```
+
+## 📊 База данных
 
 ### Event
-- id (UUID)
-- name (VARCHAR)
-- description (TEXT)
-- startDate (TIMESTAMP)
-- endDate (TIMESTAMP)
-- capacity (INT)
-- bookedCount (INT)
-- location (VARCHAR)
-- price (DECIMAL)
-- isActive (BOOLEAN)
-- createdAt (TIMESTAMP)
-- updatedAt (TIMESTAMP)
+- `id` - Уникальный идентификатор
+- `name` - Название мероприятия
+- `total_seats` - Общее количество мест
 
 ### Booking
-- id (UUID)
-- eventId (UUID, Foreign Key)
-- customerName (VARCHAR)
-- customerEmail (VARCHAR)
-- customerPhone (VARCHAR)
-- tickets (INT)
-- totalAmount (DECIMAL)
-- status (ENUM: pending, confirmed, cancelled, completed)
-- notes (TEXT)
-- createdAt (TIMESTAMP)
-- updatedAt (TIMESTAMP)
+- `id` - Уникальный идентификатор
+- `event_id` - Связь с мероприятием
+- `user_id` - Идентификатор пользователя
+- `created_at` - Дата создания
 
-## License
+## 🚀 Скрипты
 
-ISC
+```bash
+npm run dev              # Запуск в режиме разработки
+npm run build            # Сборка для production
+npm start                # Запуск production сервера
+npm run format           # Форматирование кода (Prettier)
+npm run format:check     # Проверка форматирования
+```
 
-## Author
+## 💡 Основные особенности реализации
 
-Your Name
+### Обработка ошибок
+- Кастомный класс `ApiError` для типизированных ошибок
+- Глобальный обработчик ошибок в middleware
+- Централизованная отправка ошибок клиенту
 
+### Безопасность и валидация
+- Защита от дублирующих бронирований
+- Проверка наличия свободных мест
+- Валидация входных данных
+- Ограничение пагинации (макс. 100 элементов)
+
+### Качество кода
+- TypeScript strict mode
+- Разделение ответственности (MVC pattern)
+- Комментарии на русском языке для лучшего понимания кода
+- Единый стиль кода (Prettier)
+
+## 📝 Пример использования
+
+### Резервирование места
+
+```bash
+POST /api/v1/bookings/reserve
+Content-Type: application/json
+
+{
+  "event_id": 1,
+  "user_id": "user123"
+}
+```
+
+**Успешный ответ:**
+```json
+{
+  "success": true,
+  "message": "Booking successful",
+  "data": {
+    "id": 5,
+    "event_id": 1,
+    "user_id": "user123",
+    "created_at": "2025-01-31T18:35:22.419Z"
+  }
+}
+```
+
+**Ошибка (места заняты):**
+```json
+{
+  "success": false,
+  "message": "No seats available"
+}
+```
+
+## 🎓 Для чего подходит
+
+- ⚙️ Образовательные проекты
+- 📚 Портфолио разработчика
+- 🏢 Тестовые задания
+- 🚀 Прототипирование систем бронирования
+
+## 📄 Лицензия
+
+ISC License - разрешает свободное использование, изменение и распространение кода.
+
+## 🙋‍♂️ Контакты
+
+**Email:** otabekjon0302@gmail.com  
+**Phone:** +998915566474  
+**Telegram:** otabek_0302
+
+Готов ответить на вопросы по реализации и архитектуре проекта.

@@ -1,139 +1,82 @@
-import { Request, Response } from 'express';
-import { EventService } from '@services/event.service';
-import { ApiError } from '@utils/api.error';
+import { Request, Response } from "express";
+import { EventService } from "@services/index";
 
+// Контроллер для обработки запросов событий
 export class EventController {
   private eventService = new EventService();
 
+  // Получение всех событий
   getAllEvents = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 10;
-      
-      const { events, total } = await this.eventService.getAllEvents(page, limit);
-      
-      res.json({
-        success: true,
-        data: events,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch events',
-      });
-    }
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const clampedLimit = Math.min(limit, 100);
+
+    const { events, total } = await this.eventService.getAllEvents(page, clampedLimit);
+
+    res.json({
+      success: true,
+      data: events,
+      pagination: {
+        page,
+        limit: clampedLimit,
+        total,
+        totalPages: Math.ceil(total / clampedLimit),
+      },
+    });
   };
 
+  // Получение события по ID
   getEventById = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const event = await this.eventService.getEventById(id);
-      
-      res.json({
-        success: true,
-        data: event,
-      });
-    } catch (error) {
-      if (error instanceof ApiError) {
-        res.status(error.statusCode).json({
-          success: false,
-          error: error.message,
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          error: 'Failed to fetch event',
-        });
-      }
-    }
+    const { id } = req.params;
+    const event = await this.eventService.getEventById(Number(id));
+
+    res.json({
+      success: true,
+      data: event,
+    });
   };
 
+  // Создание нового события
   createEvent = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const event = await this.eventService.createEvent(req.body);
-      
-      res.status(201).json({
-        success: true,
-        data: event,
-        message: 'Event created successfully',
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to create event',
-      });
-    }
+    const event = await this.eventService.createEvent(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: event,
+      message: "Event created successfully",
+    });
   };
 
+  // Обновление события
   updateEvent = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const event = await this.eventService.updateEvent(id, req.body);
-      
-      res.json({
-        success: true,
-        data: event,
-        message: 'Event updated successfully',
-      });
-    } catch (error) {
-      if (error instanceof ApiError) {
-        res.status(error.statusCode).json({
-          success: false,
-          error: error.message,
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          error: 'Failed to update event',
-        });
-      }
-    }
+    const { id } = req.params;
+    const event = await this.eventService.updateEvent(Number(id), req.body);
+
+    res.json({
+      success: true,
+      data: event,
+      message: "Event updated successfully",
+    });
   };
 
+  // Удаление события
   deleteEvent = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      await this.eventService.deleteEvent(id);
-      
-      res.json({
-        success: true,
-        message: 'Event deleted successfully',
-      });
-    } catch (error) {
-      if (error instanceof ApiError) {
-        res.status(error.statusCode).json({
-          success: false,
-          error: error.message,
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          error: 'Failed to delete event',
-        });
-      }
-    }
+    const { id } = req.params;
+    await this.eventService.deleteEvent(Number(id));
+
+    res.json({
+      success: true,
+      message: "Event deleted successfully",
+    });
   };
 
+  // Получение доступных событий
   getAvailableEvents = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const events = await this.eventService.getAvailableEvents();
-      
-      res.json({
-        success: true,
-        data: events,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch available events',
-      });
-    }
+    const events = await this.eventService.getAvailableEvents();
+
+    res.json({
+      success: true,
+      data: events,
+    });
   };
 }
-

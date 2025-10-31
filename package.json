@@ -7,6 +7,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "format": "prettier --write \"src/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,json}\"",
     "migration:generate": "typeorm migration:generate",
     "migration:run": "typeorm migration:run",
     "migration:revert": "typeorm migration:revert"
@@ -20,20 +22,16 @@
     "typeorm": "^0.3.17",
     "reflect-metadata": "^0.1.13",
     "dotenv": "^16.3.1",
-    "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3",
-    "express-validator": "^7.0.1",
     "cors": "^2.8.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "typescript": "^5.3.3",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "prettier": "^3.1.1"
   }
 }
 

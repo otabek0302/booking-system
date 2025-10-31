@@ -1,21 +1,18 @@
 import 'reflect-metadata';
 import app from './app';
-import { initializeDatabase } from './config/database';
-import dotenv from 'dotenv';
+import { initializeDatabase } from './database/database';
+import { env } from '@config/env.config';
 
-dotenv.config();
-
-const PORT = process.env.PORT || 3000;
-
+// Запуск сервера
 const startServer = async (): Promise<void> => {
   try {
-    // Initialize database connection
+    // Инициализация подключения к базе данных
     await initializeDatabase();
 
-    // Start the server
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    // Запуск сервера
+    app.listen(env.port, () => {
+      console.log(`Server is running on port ${env.port}`);
+      console.log(`Environment: ${env.nodeEnv}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);

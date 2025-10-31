@@ -1,15 +1,15 @@
-import { AppDataSource } from '@config/database';
-import { Event } from '@models/Event';
-import { ApiError } from '@utils/api.error';
+import { AppDataSource } from "@config/index";
+import { Event } from "@models/index";
+import { ApiError } from "@utils/index";
 
+// Сервис для работы с событиями
 export class EventService {
   private eventRepository = AppDataSource.getRepository(Event);
 
+  // Получение всех событий с пагинацией
   async getAllEvents(page: number = 1, limit: number = 10): Promise<{ events: Event[]; total: number }> {
     const skip = (page - 1) * limit;
     const [events, total] = await this.eventRepository.findAndCount({
-      where: { isActive: true },
-      order: { startDate: 'ASC' },
       skip,
       take: limit,
     });
@@ -17,45 +17,43 @@ export class EventService {
     return { events, total };
   }
 
-  async getEventById(id: string): Promise<Event> {
+  // Получение события по ID
+  async getEventById(id: number): Promise<Event> {
     const event = await this.eventRepository.findOne({
       where: { id },
-      relations: ['bookings'],
+      relations: ["bookings"],
     });
 
     if (!event) {
-      throw ApiError.notFound('Event not found');
+      throw ApiError.notFound("Event not found");
     }
 
     return event;
   }
 
+  // Создание нового события
   async createEvent(eventData: Partial<Event>): Promise<Event> {
     const event = this.eventRepository.create(eventData);
     await this.eventRepository.save(event);
     return event;
   }
 
-  async updateEvent(id: string, eventData: Partial<Event>): Promise<Event> {
+  // Обновление события
+  async updateEvent(id: number, eventData: Partial<Event>): Promise<Event> {
     const event = await this.getEventById(id);
     Object.assign(event, eventData);
     await this.eventRepository.save(event);
     return event;
   }
 
-  async deleteEvent(id: string): Promise<void> {
+  // Удаление события
+  async deleteEvent(id: number): Promise<void> {
     const event = await this.getEventById(id);
     await this.eventRepository.remove(event);
   }
 
+  // Получение доступных событий
   async getAvailableEvents(): Promise<Event[]> {
-    return await this.eventRepository
-      .createQueryBuilder('event')
-      .where('event.isActive = :isActive', { isActive: true })
-      .andWhere('event.startDate > :now', { now: new Date() })
-      .andWhere('event.bookedCount < event.capacity')
-      .orderBy('event.startDate', 'ASC')
-      .getMany();
+    return await this.eventRepository.find();
   }
 }
-

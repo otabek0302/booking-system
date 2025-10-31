@@ -1,45 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Booking } from './Booking';
 
-@Entity('events')
+// Модель события - хранит информацию о мероприятии
+@Entity("events")
 export class Event {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column()
   name!: string;
 
-  @Column({ type: 'text', nullable: true })
-  description?: string;
-
-  @Column({ type: 'timestamp' })
-  startDate!: Date;
-
-  @Column({ type: 'timestamp' })
-  endDate!: Date;
-
-  @Column({ type: 'int' })
-  capacity!: number;
-
-  @Column({ type: 'int', default: 0 })
-  bookedCount!: number;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  location?: string;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  price!: number;
-
-  @Column({ type: 'boolean', default: true })
-  isActive!: boolean;
+  @Column({ type: "int" })
+  total_seats!: number;
 
   @OneToMany(() => Booking, (booking) => booking.event)
   bookings!: Booking[];
-
-  @CreateDateColumn()
-  createdAt!: Date;
-
-  @UpdateDateColumn()
-  updatedAt!: Date;
 }
 
